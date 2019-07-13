@@ -3,17 +3,19 @@
 set -eu
 
 show_usage() {
-    echo 'Usage: [-h|-e|-d|-l] [input_file] [output_file]'
+    echo 'Usage: [-h|-e|-d|-p|-l] [input_file] [output_file]'
     echo
     echo '-h) shows this usage.'
     echo '-l) shows cipher commands.'
     echo '-e) encrypts [input_file] and writes to [output_file].'
     echo '-d) decrypts [input_file] and writes to [output_file].'
+    echo '-p) specifies encrypt/decrypt password.'
 }
 
 mode=
+password=
 
-while getopts hled OPT
+while getopts hledp: OPT
 do
     case $OPT in
         h)
@@ -25,10 +27,13 @@ do
             exit
             ;;
         e)
-            mode=encrypt
+            mode=-e
             ;;
         d)
-            mode=decrypt
+            mode=-d
+            ;;
+        p)
+            password=$OPTARG
             ;;
         \?)
             show_usage
@@ -42,7 +47,12 @@ in=${1:-''}
 out=${2:-''}
 cipher_opt=-aes-256-cbc
 
-check_args_for_enc_and_dec() {
+check_args() {
+    if [ "$mode" = "" ]; then
+        echo "mode must be specified."
+        return 1
+    fi
+
     if [ "$in" = "" -o "$out" = "" ]; then
         echo "input file and output file must be specified."
         return 1
@@ -61,15 +71,8 @@ check_args_for_enc_and_dec() {
     return 0
 }
 
-case $mode in
-    encrypt)
-        check_args_for_enc_and_dec && openssl enc -e $cipher_opt -in $in -out $out
-        ;;
-    decrypt)
-        check_args_for_enc_and_dec && openssl enc -d $cipher_opt -in $in -out $out
-        ;;
-    *)
-        echo "mode must be specified."
-        ;;
-esac
-
+if [ "$password" = "" ]; then
+    check_args && openssl enc $mode $cipher_opt -in $in -out $out
+else
+    check_args && openssl enc $mode $cipher_opt -in $in -out $out -pass pass:$password
+fi
