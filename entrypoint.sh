@@ -1,11 +1,14 @@
 #!/bin/sh
 
+version=0.1.0
+
 set -eu
 
 show_usage() {
-    echo 'Usage: [-h|-e|-d|-p|-l] [input_file] [output_file]'
+    echo 'Usage: [-h|-v|-e|-d|-p|-l] [input_file] [output_file]'
     echo
     echo '-h) shows this usage.'
+    echo '-v) shows version.'
     echo '-l) shows cipher commands.'
     echo '-e) encrypts [input_file] and writes to [output_file].'
     echo '-d) decrypts [input_file] and writes to [output_file].'
@@ -15,11 +18,15 @@ show_usage() {
 mode=
 password=
 
-while getopts hledp: OPT
+while getopts hledp:v OPT
 do
     case $OPT in
         h)
             show_usage
+            exit
+            ;;
+        v)
+            echo $version
             exit
             ;;
         l)

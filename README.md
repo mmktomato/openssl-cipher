@@ -26,6 +26,9 @@ $ docker run --rm -v $PWD:/tmp mmktomato/openssl-cipher -d -p <password> <in_fil
 # Show help
 $ docker run --rm mmktomato/openssl-cipher -h
 
+# Show version
+$ docker run --rm mmktomato/openssl-cipher -v
+
 # Show available cipher commands
 # Note: currently only `aes-256-cbc` is supported.
 $ docker run --rm mmktomato/openssl-cipher -l
