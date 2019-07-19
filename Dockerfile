@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.10
 
 WORKDIR /tmp
 COPY entrypoint.sh /entrypoint.sh

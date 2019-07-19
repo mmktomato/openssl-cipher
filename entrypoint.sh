@@ -30,7 +30,7 @@ do
             exit
             ;;
         l)
-            openssl list-cipher-commands
+            openssl enc -ciphers
             exit
             ;;
         e)
@@ -52,7 +52,7 @@ shift $((OPTIND - 1))
 
 in=${1:-''}
 out=${2:-''}
-cipher_opt=-aes-256-cbc
+cipher=-aes-256-cbc
 
 check_args() {
     if [ "$mode" = "" ]; then
@@ -79,7 +79,7 @@ check_args() {
 }
 
 if [ "$password" = "" ]; then
-    check_args && openssl enc $mode $cipher_opt -in $in -out $out
+    check_args && openssl enc $mode $cipher -pbkdf2 -iter 100000 -in $in -out $out
 else
-    check_args && openssl enc $mode $cipher_opt -in $in -out $out -pass pass:$password
+    check_args && openssl enc $mode $cipher -pbkdf2 -iter 100000 -in $in -out $out -pass pass:$password
 fi
